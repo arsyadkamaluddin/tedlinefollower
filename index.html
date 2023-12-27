@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Line Follower TED 2024</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="icon" type="image/x-icon" href="assets/logo (1).png" />
+    <link rel="stylesheet" href="style/coba.css" />
+  </head>
+  <body class="py-2">
+    <div id="startButton"></div>
+    <div class="pinButton"></div>
+    <div class="pinButton"></div>
+    <img class="bgUtama" src="assets/logo.png" alt="" />
+
+    <div class="red wasit">
+      <h1>Menunggu Peserta</h1>
+      <div class="tombol">Checkpoint</div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = new WebSocket("wss://glrdwj12-3000.asse.devtunnels.ms/");
+      let text = document.querySelector("h1");
+      let tombol = document.querySelector(".tombol");
+      function waitForSocketConnection(sock, callback) {
+        setTimeout(function () {
+          if (sock.readyState === 1) {
+            if (callback != null) {
+              callback();
+            }
+          } else {
+            waitForSocketConnection(sock, callback);
+          }
+        }, 5); // wait 5 milisecond for the connection...
+      }
+      function sendMes(msg) {
+        waitForSocketConnection(socket, function () {
+          socket.send(msg);
+        });
+      }
+      sendMes("!player");
+      socket.addEventListener("message", (data) => {
+        text.innerHTML = data.data.replaceAll('"', "");
+      });
+      // socket.addEventListener("message", (event) => {
+      //   let mes = event.data;
+      //   if (mes == "Halo") {
+      //     alert("Koneksi Penuh");
+      //     document.writeln();
+      //   } else if (mes == "reset") {
+      //     location.reload();
+      //   }
+      //   text.innerHTML = mes.replaceAll('"', "").replaceAll("\\", "");
+      //   document.querySelector(".Checkpoint").style.display = "block";
+      // });
+      tombol.addEventListener("click", function () {
+        sendMes(text.innerHTML);
+      });
+    </script>
+  </body>
+</html>
